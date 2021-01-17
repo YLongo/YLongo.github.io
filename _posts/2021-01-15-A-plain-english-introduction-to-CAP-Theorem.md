@@ -1,3 +1,9 @@
+---
+title: 大白话介绍CAP理论
+---
+
+
+
 > 翻译自：[A plain english introduction to CAP Theorem](http://ksat.me/a-plain-english-introduction-to-cap-theorem)
 
 # 大白话介绍CAP理论
