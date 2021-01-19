@@ -48,7 +48,11 @@ $$
 
 图 1 绘制了随机生成的 250 个顶点与 250 个边的图的收敛曲线，它的收敛阀值是 0.0001。随着图的连接增加（例如：大量的边），在几次递归之后，收敛就可以达到。无向图与有向图的收敛曲线几乎是重合的。
 
-![Number of iteratio](/images/TextRank-文本排序/Number-of-teratio.png)
+<div align='center'>
+    <img src='/images/TextRank-文本排序/Number-of-teratio.png' />
+</div>
+
+
 
 >   图 1：基于图的排序的收敛曲线：有向 / 无向图，有权 / 无权图，250 个顶点，250 条边。
 
