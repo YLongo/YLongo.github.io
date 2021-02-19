@@ -1,5 +1,6 @@
 ---
 title: 大白话介绍CAP理论
+layout: post
 ---
 
 
