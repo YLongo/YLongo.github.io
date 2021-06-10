@@ -478,7 +478,150 @@
     
       ![image-20210610103541802](assets/image-20210610103541802.png)
     
-      
+38. 创建符号链接
+
+    `ln –s item link`
+
+    item可以是文件也可以是目录
+
+    ```bash
+    $ ln -s fun fun-sym
+    $ ls -l
+    lrwxrwxrwx 1 root root 3 Jun 10 15:23 fun-sym -> fun
+    ```
+
+39. 显示可执行程序的位置
+
+    `which`
+
+    ```bash
+    $ which ls
+    /bin/ls
+    ```
+
+    > which命令只适用于可执行程序，而不适用于内置命令和命令别名
+
+40. 显示命令的类型
+
+    `type command`
+
+    ```bash
+    $ type cp
+    cp is /bin/cp
+    ```
+
+41. 创建命令的别名
+
+    `alias name='string'`
+
+    ```bash
+    $ alias foo='cd /usr; ls; cd -'
+    $ foo
+    bin  games  include  lib  libexec  local  sbin  share  src
+    /home/root
+    ```
+
+42. 清空一个已存在的文件内容或者创建一个新的空文件
+
+    `> file_name`
+
+43. 标准文件描述符
+
+    Linux系统将每个对象当作文件处理。这包括输入和输出进程。Linux用文件描述符来标识每个文件对象。文件描述符是一个非负整数，可以唯一标识会话中打开的文件。每个进程一次最多可以有九个文件描述符。bash shell保留了前三个文件描述符
+
+    ![image-20210610165015886](assets/image-20210610165015886.png)
+
+    - `0`
+
+      代表shell的标准输入。对终端界面来说，标准输入是键盘
+
+    - `1`
+
+      代表shell的标准输出。在终端界面上，标准输出就是终端显示器。shell的所有输出（包括shell中运行的程序和脚本）会被定向到标准输出中
+
+    - `2`
+
+      代表shell的标准错误输出。默认情况下，`STDERR`文件描述符会和`STDOUT`文件描述符指向同样的地方。也就是说，默认情况下，错误消息也会输出到显示器中。但是`STDERR`并不会随着`STDOUT`的重定向而发生改变
+
+44. 只重定向错误
+
+    将`STDERR`文件描述符放在重定向符号前。
+
+    > 该值必须与重定向符号之间不能有空格
+
+    ```bash
+    $ ls -al test badtest test2 2> test5
+    -rw-rw-r-- 1 rich rich 158 2014-10-16 11:32 test2
+    $
+    $ cat test5
+    ls: cannot access test: No such file or directory
+    ls: cannot access badtest: No such file or directory
+    $
+    ```
+
+    错误消息不会出现在屏幕上了，但是标准输出依然会显示在屏幕上
+
+45. 重定向错误和数据
+
+    要重定向错误和正常输出，需要使用两个重定向符号
+
+    ```bash
+    $ ls -al test test2 test3 badtest 2> test6 1> test7
+    $ cat test6
+    ls: cannot access test: No such file or directory
+    ls: cannot access badtest: No such file or directory
+    $ cat test7
+    -rw-rw-r-- 1 rich rich 158 2014-10-16 11:32 test2
+    -rw-rw-r-- 1 rich rich 0 2014-10-16 11:33 test3
+    $
+    ```
+
+    将`STDERR`和`STDOUT`的输出重定向到同一个输出文件，可以使用特殊的重定向符号`&>`
+
+    ```bash
+    $ ls -al test test2 test3 badtest &> test7
+    $ cat test7
+    ls: cannot access test: No such file or directory
+    ls: cannot access badtest: No such file or directory
+    -rw-rw-r-- 1 rich rich 158 2014-10-16 11:32 test2
+    -rw-rw-r-- 1 rich rich 0 2014-10-16 11:33 test3
+    $
+    ```
+
+46. 临时重定向
+
+    将单独的一行输出重定向到`STDERR`时，需要使用输出重定向符来将输出信息重定向到`STDERR`文件描述符
+
+    > 在重定向到文件描述符时，必须在文件描述符数字之前加一个`& `
+
+    ```bash
+    $ cat test8
+    #!/bin/bash
+    echo "This is an error" >&2
+    echo "This is normal output"
+    $
+    ```
+
+    如果仅仅只是运行这个脚本，看不出什么区别
+
+    ```bash
+    $ ./test8
+    This is an error
+    This is normal output
+    $
+    ```
+
+    但如果在运行脚本时重定向了`STDERR`，脚本中所有导向`STDERR`的文本都会被重定向
+
+    ```bash
+    $ ./test8 2> test9
+    This is normal output
+    $ cat test9
+    This is an error
+    $
+    ```
+
+    
 
 
 
