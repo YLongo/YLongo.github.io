@@ -132,7 +132,7 @@
 
       > gzip压缩过的tar文件以.tgz结尾
     
-15. 使用`env`或`printenv`命令查看全局变量
+15. 使用`env`或`printenv`命令查看全部环境变量
 
 16. 显示个别环境变量的值，可以使用`printenv`命令或者`echo env_name`命令
 
