@@ -7,17 +7,17 @@
   - Windows添加如下命令：
 
     ```ssh
-Host github
+    Host github
         HostName ssh.github.com
         ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
-```
+    ```
   - Mac添加如下命令
 
     ```config
-Host github
+    Host github
         HostName ssh.github.com
         ProxyCommand nc -x 127.0.0.1:1086 %h %p
-```
+    ```
 - `https`
 
   在用户目录下的`.gitconfig`文件中添加如下语句：
