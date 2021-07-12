@@ -621,6 +621,49 @@
     $
     ```
 
+47. 永久重定向
+
+    ```bash
+    $ cat test11
+    #!/bin/bash
+    # 后续STDERROR都将重定向到testerror
+    exec 2>testerror
+    
+    echo "This is the start of the script"
+    echo "now redirecting all output to another location"
+    
+    # 后续STDOUT都将重定向到testerror
+    exec 1>testout
+    echo "This output should go to the testout file"
+    
+    # 仍然可以手动将STDOUT的输出发给STDERROR
+    echo "but this should go to the testerror file" >&2
+    $
+    $ ./test11
+    This is the start of the script
+    now redirecting all output to another location
+    $
+    $ cat testout
+    This output should go to the testout file
+    $
+    $ cat testerror
+    but this should go to the testerror file
+    $
+    ```
+
+48. 阻止命令输出
+
+    ```bash
+    # 将不会有任何输出
+    $ ls -al > /dev/null
+    $
+    # 错误消息将不会输出
+    $ ls -al badfile testfile 2> /dev/null
+    $
+    # testfile中的内容将会被清空
+    $ cat /dev/null > testfile
+    ```
+
     
 
 
