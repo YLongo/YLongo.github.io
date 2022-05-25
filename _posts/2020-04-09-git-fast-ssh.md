@@ -33,3 +33,24 @@
 >
 > 加`HostName`前缀是为了保证，只在`github`下才走代理，不然是全局都这样
 
+
+
+---
+
+
+
+如果提交代码时报如下错误或者其它稀奇古怪的问题：
+
+```shell
+kex_exchange_identification: Connection closed by remote host
+Connection closed by UNKNOWN port 65535
+fatal: 无法读取远程仓库。
+
+请确认您有正确的访问权限并且仓库存在
+```
+
+如果使用了代理：
+
+- 查看`~/.ssh/config`中配置的代理socks端口是否正确
+- 查看git全局配置路径`$HOME/.gitconfig`中配置的代理是否正确
+- 如果`ping github.com`显示的IP地址是`127.0.0.1`，可以尝试更改DNS地址为`114.114.114.114`
