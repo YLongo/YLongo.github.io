@@ -1,4 +1,8 @@
-# Redis底层原理（译）
+---
+title: Redis底层原理（译）
+---
+
+
 
 > 翻译自：https://www.pauladamsmith.com/articles/redis-under-the-hood.html
 >
@@ -12,8 +16,8 @@ Redis服务是如何工作的？
 
 ‍
 
-[TOC]
-
+* Do not remove this line (it will not be displayed)
+{:toc}
 
 
 ## 启动
