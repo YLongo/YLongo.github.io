@@ -58,7 +58,7 @@ struct redisServer server; /* server为全局状态变量 */
 * event loop工具
 * pub/sub
 
-例如，这个类型包含的成员对应配置文件（通常名为`redis.confg`​）中的选项，比如服务监听的端口，日志记录的级别，指向已连接的客户端列表，Redis从服务，以及Reids数据库本身的指针，以及用于统计从启动时已经处理的命令数的计数器。
+例如，这个类型包含的成员对应配置文件（通常名为`redis.confg`​）中的选项，比如服务监听的端口，日志记录的级别，指向已连接的客户端列表，salve，以及Reids数据库本身的指针，以及用于统计从启动时已经处理的命令数的计数器。
 
 `initServerConfig()`​为用户使用的`redis.conf`​文件中的配置对应的成员变量提供了默认值
 
@@ -117,7 +117,7 @@ struct redisCommand {
 > signal(SIGPIPE, SIG_IGN);
 > ```
 
-大量的双向链表会被创建（见`adlist.h`），用于记录客户端，从服务，监视器（客户端会发送`MONITOR`命令），以及空闲对象列表。
+大量的双向链表会被创建（见`adlist.h`），用于记录客户端，slave，监视器（客户端会发送`MONITOR`命令），以及空闲对象列表。
 
 
 
@@ -188,6 +188,50 @@ if (server.fd == -1) {
 #### 定时任务
 
 `initServer()`会进一步为数据库以及pub/sub分配各种dicts和lists，重置统计数据和各种标识，记录了服务启动时的UNIX时间戳。它将`serverCron`作为时间事件注册到EventLoop中，每隔100ms执行一次这个函数。（这个有点取巧，因为初始化的时候`initServer`将`serverCron()`设置在1毫秒内执行，是为了让定时任务在服务启动时立即执行，但是`serverCron()`的返回值是100，然后被插入到时间事件的下一次计算中进行处理）
+
+`serverCron()`为Redis执行大量周期性的任务，包括打印数据库的大小（键的数量以及使用的内存）；已连接的客户端数量；调整哈希表的大小；关闭空闲/连接超时的客户端连接；执行任何后台`save`以及AOF重写；如果配置中的`save`条件已经满足，则执行后台的`save`（多少key在多少秒内发生了变化）；计算LRU信息并处理已经过期的key（Redis使用自适用的统计方法，在每一个定时任务的周期内仅仅只会淘汰一些过期时间的key，避免占用服务器资源，但是如果淘汰过期的key能够避免产生OOM，那么会选择淘汰更多的key）；如果开始了虚拟内存，则会将数据交换到磁盘；以及如果当前服务是slave则会与master进行同步。
+
+
+
+#### 向EventLoop注册连接处理器
+
+最重要的是，`initServer()`通过注册socket描述符将EventLoop与服务的TCP socket连接起来。注册`acceptHandler`函数，当接受一个新连接时被调用。（更多的细节见下面“处理请求”部分）
+
+```c
+// redis.c:821
+if (aeCreateFileEvent(server.el, server.fd, AE_READABLE,
+    acceptHandler, NULL) == AE_ERR) oom("creating file event");
+```
+
+
+
+#### 打开 AOF
+
+如果配置了AOF，`initServer()`会创建或者打开AOF文件。
+
+```c
+// redis.c:824
+if (server.appendonly) {
+    server.appendfd = open(server.appendfilename,O_WRONLY|O_APPEND|O_CREAT,0644);
+```
+
+如果服务器配置了虚拟内存，最终`initServer()`会再次初始化Redis虚拟内存系统。
+
+
+
+### 回到 `main()`
+
+如果配置了守护进程（daemonize），Redis将会尝试写出一个pid文件（路径是可配置的，默认是`/var/run/redis.pid`）
+
+此时，服务已经启动，Redis会在日志文件中打印出来。但是在Redis完全准备好之前，`main()`还有更多的事情要做。
+
+
+
+
+
+
+
+
 
 
 
