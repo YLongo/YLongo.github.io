@@ -215,7 +215,9 @@ if (server.appendonly) {
     server.appendfd = open(server.appendfilename,O_WRONLY|O_APPEND|O_CREAT,0644);
 ```
 
-如果服务器配置了虚拟内存，最终`initServer()`会再次初始化Redis虚拟内存系统。
+如果服务配置了虚拟内存，最终`initServer()`会再次初始化Redis虚拟内存系统。
+
+> 译注：虚拟内存已被Redis废弃，见[Virtual memory (deprecated)](https://redis.io/docs/reference/internals/internals-vm/)，或者见译文[Redis虚拟内存](http://ifeve.com/redis-mem/)
 
 
 
