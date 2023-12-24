@@ -94,12 +94,133 @@ struct redisCommand {
 
 这个只读表在源码中已经排序好了序，所以这些命令可以通过类型进行分组，比如string命令，list命令，set命令等。它让程序员可以轻易的查看类型的命令。这些排好序的命令表由全局变量`commandTable`​指向它，通过二分查找方法`lookupCommand()`​进行查找Redis命令，该方法返回一个指向`redisCommand`​的指针。
 
-> `redisCommand`​类型会记录它的名字，例如`get`​—指针指向它实际执行的C函数，用于执行该命令；命令的有效性；命令标志，比如是否批量返回；以及一些特定虚拟机的成员变量
+> `redisCommand`​类型会记录它的名字，例如`get`​ — 指针指向它实际执行的C函数，用于执行该命令；命令的有效性；命令标志，比如是否批量返回；以及一些特定虚拟机的成员变量
 
 ‍
 
 ### 加载配置文件
 
-`main()`​函数继续处理用户在启动Redis服务时的命令行选项。目前，除了版本参数`-v`​和帮助参数`-h`​外，Redis仅仅只会接收一个参数，即配置文件的路径。Redis加载配置文件，通过`initServerConfig()`​方法去调用`loadServerConfig()`​来重写默认的配置。这个函数非常的简单，
+`main()`函数继续处理用户在启动Redis服务时的命令行选项。目前，除了版本参数`-v`和帮助参数`-h`外，Redis仅仅只会接收一个参数，即配置文件的路径。Redis加载配置文件，通过`initServerConfig()`方法去调用`loadServerConfig()`来重写默认的配置。这个函数非常的简单，遍历配置文件中的每一行，通过名字进行匹配，将其转变为`server`类型中对应的成员变量。这时，Redis将会在后台运行，并且将会从控制终端分离，如果进行了这种配置的话。
+
+
+
+### initServer()
+
+`initServer()`将会完成由`initServerConfig()`开始初始化的`server`变量。首先，它会设置一个信号处理（`SIGHUP`和`SIGPIPE`信号将会被忽略 — 让Redis有能力在收到`SIGHUP`信号时重新加载配置文件，与其他守护进程类似），以及如果服务在收到`SIGSEGV`信号时打印堆栈信息，见`segvHandler()`。
+
+> 译注：这句话怪怪的，又说`SIGHUP`信号被忽略，又说要接收
+>
+> 在源码里面确实看到了这两个信号被忽略，但是后面的解释不知道咋得出来的
+>
+> ```c
+> signal(SIGHUP, SIG_IGN);
+> signal(SIGPIPE, SIG_IGN);
+> ```
+
+大量的双向链表会被创建（见`adlist.h`），用于记录客户端，从服务，监视器（客户端会发送`MONITOR`命令），以及空闲对象列表。
+
+
+
+#### 共享对象
+
+一个有意思的事情是Redis创建了很多的共享对象，可以通过全局的`shared`变量进行访问。通用的Redis对象被许多不同的命令使用，比如响应字符串、错误信息。共享对象就不需要每次再进行分配，可以节省内存，但是在启动时会多做一点初始化工作。
+
+```c
+// redis.c:662
+shared.crlf = createObject(REDIS_STRING,sdsnew("\r\n"));
+shared.ok = createObject(REDIS_STRING,sdsnew("+OK\r\n"));
+shared.err = createObject(REDIS_STRING,sdsnew("-ERR\r\n"));
+shared.emptybulk = createObject(REDIS_STRING,sdsnew("$0\r\n\r\n"));
+// ...
+```
+
+
+
+##### 共享整数
+
+就节省内存来说，共享对象的最大影响来自大量的共享整数池。
+
+```c
+// redis.c:705
+for (j = 0; j < REDIS_SHARED_INTEGERS; j++) {
+    shared.integers[j] = createObject(REDIS_STRING,(void*)(long)j);
+    shared.integers[j]->encoding = REDIS_ENCODING_INT;
+}
+```
+
+`createSharedObjects()`创建了前10000个非负整数对象（整数编码的字符串）的数组。大量Redis对象比如strings，sets，以及lists都会包含许多小的整数（ID或者计数器），它们可以重用内存中已经分配的同一对象，节省了大量的内存。想象一下如果将`REDIS_SHARED_INTEGERS`这常量暴露在配置当中，让用户根据应用的需求来选择增加共享的整数将会节约大量的内存。代价是Redis在启动的时候静态的分配更多的内存，但是与整个数据库的大小以及潜在的节省相比，这只是很小的代价。
+
+> 译注：不建议想象，因为目前是不支持在配置中改的，如果要改，只能改源码，那么就需要重新编译
+
+
+
+#### Event loop 事件循环
+
+`initServer()`继续创建核心的EventLoop，通过调用`aeCreateEventLoop()`（见`ae.c`），并将结果分配给`server`的成员变量`el`。
+
+`ae.h`提供了一个基于操作系统的的包装器，用于设置I/O事件的通知循环，在Linux上使用`epoll`，在BSD上使用`kqueue`，如果在不满足的情况下会使用`select`。Redis的EventLoop会轮询新连接和I/O事件（从socket中读请求以及写请求），在新事件到达时会被触发。这就是为什么Redis响应如此之快，它可以同时处理几千个客户端的请求而不会阻塞。
+
+> Redis关键的一个实现在于提供了一个本地的包装器，隐藏了通用任务的复杂性，在编译时期不需要增加额外的依赖。例如，`zmalloc.h`为`*alloc()`系列函数定义了大量的包装器，记录Redis分配了多少内存。`sds.h`为strings定义了相关API（记录了字符串的长度，以及它的内存是否可以被释放。
+
+
+
+#### 数据库
+
+`initServer()`还会初始化许多`redisDB`对象，它封装了Redis数据库的相关细节，包括记录过期的key，阻塞中的key（不管是来自`B{L, R}POP`命令还是I/O），以及监视在进行CAS的key。（默认情况下有16个独立的数据库，可以将其看作为Redis内部的命名空间）
+
+
+
+#### TCP socket
+
+`initServer()`是Redis用来设置监听连接的socket的地方（默认会绑定在6379端口）。另一个Redis的本地封装是`anet.h`，定义了`anetTcpServer()`，以及其他的函数用于简化设置新的socket，绑定与监听端口的复杂性。
+
+```c
+// redis.c:791
+server.fd = anetTcpServer(server.neterr, server.port, server.bindaddr);
+if (server.fd == -1) {
+    redisLog(REDIS_WARNING, "Opening TCP port: %s", server.neterr);
+    exit(1);
+}
+```
+
+
+
+#### 定时任务
+
+`initServer()`会进一步为数据库以及pub/sub分配各种dicts和lists，重置统计数据和各种标识，记录了服务启动时的UNIX时间戳。它将`serverCron`作为时间事件注册到EventLoop中，每隔100ms执行一次这个函数。（这个有点取巧，因为初始化的时候`initServer`将`serverCron()`设置在1毫秒内执行，是为了让定时任务在服务启动时立即执行，但是`serverCron()`的返回值是100，然后被插入到时间事件的下一次计算中进行处理）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ‍
