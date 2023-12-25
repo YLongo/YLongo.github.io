@@ -229,6 +229,67 @@ if (server.appendonly) {
 
 
 
+#### 恢复数据
+
+如果存在AOF或者数据库的dump文件（比如`dump.rdb`），那么将会加载这个文件，将上一次会话的数据恢复到服务上（如果两者都存在，则AOF文件优先）
+
+```c
+// redis.c:1452
+if (server.appendonly) {
+    if (loadAppendOnlyFile(server.appendfilename) == REDIS_OK)
+        redisLog(REDIS_NOTICE,"DB loaded from append only file: %ld seconds",time(NULL)-start);
+} else {
+    if (rdbLoad(server.dbfilename) == REDIS_OK)
+        redisLog(REDIS_NOTICE,"DB loaded from disk: %ld seconds",time(NULL)-start);
+}
+```
+
+现在服务已经准备好接收请求了。
+
+
+
+#### EventLoop设置
+
+最后，Redis注册了一个`beforeSleep()`的函数，每次进入EventLoop时都会被调用（因为进程在等待事件通知时，本质上是处于休眠状态）。`beforeSleep()`做两件事：如果启用了虚拟内存系统，处理客户端请求的key，会将其交换到磁盘上，以及将AOF刷到磁盘上。AOF的写入由`flushAppendOnlyFile()`处理，该函数封装了将包含待写入AOF的buffer刷入磁盘的复杂处理逻辑（具体的频率由用户配置）。
+
+
+
+#### 进入EventLoop 
+
+Redis现在通过调用`aeMain`进入主EventLoop中，参数是`server.el`（该成员变量包含了一个指向`aeEventLoop`的指针）。如果进程每次进入循环时，存在任何的时间事件（比如定时任务）或者文件事件，它们各自的处理函数将会被调用。`aeProcessEvents()`封装了这个逻辑 — 时间事件通过自定义逻辑处理，而文件事件通过底层的`epoll`或者`kqueue`或者`select`I/O事件通知系统处理。
+
+因为Redis需要对时间事件以及文件或者I/O事件进行响应，所以它实现了一个自定义的事件轮询`aeMain()`。通过检查是否有任何的时间事件需要处理，以及利用文件事件通知，EventLoop可以有效的休眠，直到有工作需要做，并且不会在`while`循环中大量占用CPU。
+
+
+
+## 处理请求并返回响应
+
+我们现在进入Redis主EventLoop轮询中了，监听端口并等待客户端连接。是时候去看一下Redis是怎么处理命令请求了。
+
+![img](../images/redis-under-the-hook/request-response.png)
+
+### 处理新连接
+
+回到`initServer()`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
