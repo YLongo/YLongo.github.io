@@ -270,7 +270,38 @@ Redis现在通过调用`aeMain`进入主EventLoop中，参数是`server.el`（�
 
 ### 处理新连接
 
-回到`initServer()`
+回到`initServer()`，Redis注册`acceptHandler()`在服务监听的socket文件描述符相关的I/O事件时被调用（比如，socket有数据等待读取或者写入）。`acceptHandler()`创建一个客户端对象 — 指向`redisClient`，该对象的结构定义在`redis.h`中 — 表示一个新客户端的连接。
+
+```c
+// networking.c:347
+cfd = anetAccept(server.neterr, fd, cip, &cport);
+if (cfd == AE_ERR) {
+    redisLog(REDIS_VERBOSE,"Accepting client connection: %s", server.neterr);
+    return;
+}
+redisLog(REDIS_VERBOSE,"Accepted %s:%d", cip, cport);
+if ((c = createClient(cfd)) == NULL) {
+    redisLog(REDIS_WARNING,"Error allocating resoures for the client");
+    close(cfd); /* May be already closed, just ingore errors */
+    return;
+}
+```
+
+调用`createClient()`分配以及初始化一个客户端对象。默认选择`0`号数据库（因为每个服务至少有一个数据库），将在`acceptHandler()`中由[`accept(2)`](http://linux.die.net/man/2/accept)生成的客户端文件描述符与客户端对象关联起来。其他的标识以及成员变量都会被初始化，最终客户端会被添加到`server.clients`记录的客户端全局列表中。Redis在`createClient`中做的主要工作是在EventLoop中注册一个处理器`readQueryFromClient()`，该函数在客户端连接有数据时进行读取。
+
+```c
+// networking.c:20
+if (aeCreateFileEvent(server.el,fd,AE_READABLE, readQueryFromClient, c) == AE_ERR)
+{
+    close(fd);
+    zfree(c);
+    return NULL;
+}
+```
+
+
+
+
 
 
 
