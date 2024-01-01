@@ -301,11 +301,38 @@ if (aeCreateFileEvent(server.el,fd,AE_READABLE, readQueryFromClient, c) == AE_ER
 
 
 
+### 从客户端读取命令
 
+当客户端请求一个命令时，主EventLoop会调用`readQueryFromClient()`。（如果你通过GDB进行debug，该函数非常适合进行断点）。它会尽可能多的读取命令 — 最多为1024字节 — 到临时缓冲区，然后将命令追加到客户端特有的查询缓冲区中。这允许Redis处理大于1024字节的内容（命令名加上参数），由于I/O的原因会被分割成多个读取事件。然后它会调用`processInputBuffer()`，并将客户端对象通过参数进行传递。
 
+```c
+// networking.c:754
+void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask) {
+    redisClient *c = (redisClient*) privdata;
+    // REDIS_IOBUF_LEN=1024
+    char buf[REDIS_IOBUF_LEN];
+    int nread;
+    // ...
 
+    nread = read(fd, buf, REDIS_IOBUF_LEN);
+    // ...
+    if (nread) {
+        size_t oldlen = sdslen(c->querybuf);
+        c->querybuf = sdscatlen(c->querybuf, buf, nread);
+        c->lastinteraction = time(NULL);
+        /* Scan this new piece of the query for the newline. We do this
+         * here in order to make sure we perform this scan just one time
+         * per piece of buffer, leading to an O(N) scan instead of O(N*N) */
+        if (c->bulklen == -1 && c->newline == NULL)
+            c->newline = strchr(c->querybuf+oldlen,'\n');
+    } else {
+        return;
+    }
+    Processinputbuffer(c);
+}
+```
 
-
+`processInputBuffer()`会将客户端的原始查询解析为Redis命令执行的参数
 
 
 
