@@ -332,7 +332,11 @@ void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask) {
 }
 ```
 
-`processInputBuffer()`会将客户端的原始查询解析为Redis命令执行的参数
+`processInputBuffer()`会将客户端的原始查询解析为Redis命令执行的参数。它首先要处理客户端被`B{L, R}POP`命令阻塞的可能性，一旦出现这种情况，将会提前退出。该函数随后将原始查询缓冲区解析为参数，为每个参数创建Redis `string`对象，将它们存储在客户端对象的数组中。查询是以[Redis协议](https://redis.io/docs/reference/protocol-spec/)的形式。`processInputBuffer()`实际上是一个协议解析器，调用`processCommand()`命令来完全解析协议。有点让人困惑的是，源码的注释中描述解析“多批量命令类型“是一种可选的协议，最初是用来处理类似`MSET`的命令，但实际情况是它是现在所有命令的主要Redis协议。该协议是二进制安全的（译注：[二进制安全](https://www.zhihu.com/question/28705562)），且易于解析以及debug。（注意：这个代码在即将到来的2.2版本被重构，变量更加易于理解）。现在是时候调用`processCommand()`来真正的执行客户端发送的命令了.
+
+
+
+
 
 
 
