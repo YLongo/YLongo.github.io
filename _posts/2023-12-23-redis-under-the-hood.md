@@ -12,7 +12,7 @@ title: Redis底层原理（译）
 
 Redis服务是如何工作的？
 
-我一直好奇想要知道Redis的内部结构，所以我一直在看Redis的源码。在剥了足够多的洋葱后，我意识到我尝试在我的脑海中保留足够多的细节，但我并不能清楚的知道它们是如果结合在一起的。所以我决定将Redis服务如何启动以及如何初始化记录下来，以及如何处理客户端的请求以及响应。算是作为向我自己解释的一种方式，希望能够说的清楚。幸运的是，Redis的代码写的非常优美，且容易阅读。通过[TAGS](http://ctags.sourceforge.net/)，我的编译器以及GDB，我得以看清它的底层原理。（顺便说一句，我看的是基于[b4f2e41此次提交](http://github.com/antirez/redis/tree/b4f2e412d087bae0a523fe6ea40fcad30fe74b5b)的源码）。当然我下面大纲列出来的内部结构可能已经发生了变化，但是总体架构不会有太多变化。
+我一直好奇想要知道Redis的内部结构，所以我一直在看Redis的源码。在看了足够多的源码后，我意识到我尝试在我的脑海中保留足够多的细节，但我并不能清楚的知道它们是如果结合在一起的。所以我决定将Redis服务如何启动以及如何初始化记录下来，以及如何处理客户端的请求以及响应。算是作为向我自己解释的一种方式，希望能够说的清楚。幸运的是，Redis的代码写的非常优美，且容易阅读。通过[TAGS](http://ctags.sourceforge.net/)，我的编译器以及GDB，我得以看清它的底层原理。（顺便说一句，我看的是基于[b4f2e41](http://github.com/antirez/redis/tree/b4f2e412d087bae0a523fe6ea40fcad30fe74b5b)此次提交的源码）。当然我下面大纲列出来的内部结构可能已经发生了变化，但是总体架构不会有太多变化。
 
 ‍
 
@@ -48,19 +48,19 @@ struct redisServer server; /* server为全局状态变量 */
 
 这个类型有大量的成员变量，但是它们会被分为如下几类：
 
-* 一般的`server`​状态
+* 通用的`server`​状态
 * 统计
 * 配置文件中配置
 * 复制（replication）
 * 排序参数
 * 虚拟内存配置，状态，I/O线程，以及统计
 * zip结构
-* event loop工具
+* EventLoop工具
 * pub/sub
 
 例如，这个类型包含的成员对应配置文件（通常名为`redis.confg`​）中的选项，比如服务监听的端口，日志记录的级别，指向已连接的客户端列表，salve，以及Reids数据库本身的指针，以及用于统计从启动时已经处理的命令数的计数器。
 
-`initServerConfig()`​为用户使用的`redis.conf`​文件中的配置对应的成员变量提供了默认值
+`initServerConfig()`​为用户使用的`redis.conf`​文件中的配置对应的成员变量提供了默认值。
 
 ‍
 
@@ -92,7 +92,7 @@ struct redisCommand {
 };
 ```
 
-这个只读表在源码中已经排序好了序，所以这些命令可以通过类型进行分组，比如string命令，list命令，set命令等。它让程序员可以轻易的查看类型的命令。这些排好序的命令表由全局变量`commandTable`​指向它，通过二分查找方法`lookupCommand()`​进行查找Redis命令，该方法返回一个指向`redisCommand`​的指针。
+这个只读表在源码中已经排序好了序，所以这些命令可以通过类型进行分组，比如string命令，list命令，set命令等。它让程序员可以轻易的查看类似的命令。这些排好序的命令表由全局变量`commandTable`指向它，通过二分查找方法（`lookupCommand()`，该方法返回一个指向`redisCommand`的指针）进行查找Redis命令。
 
 > `redisCommand`​类型会记录它的名字，例如`get`​ — 指针指向它实际执行的C函数，用于执行该命令；命令的有效性；命令标志，比如是否批量返回；以及一些特定虚拟机的成员变量
 
@@ -100,7 +100,7 @@ struct redisCommand {
 
 ### 加载配置文件
 
-`main()`函数继续处理用户在启动Redis服务时的命令行选项。目前，除了版本参数`-v`和帮助参数`-h`外，Redis仅仅只会接收一个参数，即配置文件的路径。Redis加载配置文件，通过`initServerConfig()`方法去调用`loadServerConfig()`来重写默认的配置。这个函数非常的简单，遍历配置文件中的每一行，通过名字进行匹配，将其转变为`server`类型中对应的成员变量。这时，Redis将会在后台运行，并且将会从控制终端分离，如果进行了这种配置的话。
+`main()`函数继续处理用户在启动Redis服务时的命令行选项。目前，除了版本参数`-v`和帮助参数`-h`外，Redis仅仅只会接收一个参数，即配置文件的路径。Redis加载配置文件，通过`initServerConfig()`方法去调用`loadServerConfig()`来重写默认的配置。这个函数非常的简单，遍历配置文件中的每一行，通过名字进行匹配，将其转变为`server`类型中对应的成员变量。这时，如果配置了后台运行（daemonize），那么Redis将会在后台运行，并且将会从控制终端分离。
 
 
 
@@ -154,7 +154,7 @@ for (j = 0; j < REDIS_SHARED_INTEGERS; j++) {
 
 
 
-#### Event loop 事件循环
+#### EventLoop 事件循环
 
 `initServer()`继续创建核心的EventLoop，通过调用`aeCreateEventLoop()`（见`ae.c`），并将结果分配给`server`的成员变量`el`。
 
@@ -221,7 +221,7 @@ if (server.appendonly) {
 
 
 
-### 回到 `main()`
+### 回到 main()
 
 如果配置了守护进程（daemonize），Redis将会尝试写出一个pid文件（路径是可配置的，默认是`/var/run/redis.pid`）
 
@@ -287,7 +287,7 @@ if ((c = createClient(cfd)) == NULL) {
 }
 ```
 
-调用`createClient()`分配以及初始化一个客户端对象。默认选择`0`号数据库（因为每个服务至少有一个数据库），将在`acceptHandler()`中由[`accept(2)`](http://linux.die.net/man/2/accept)生成的客户端文件描述符与客户端对象关联起来。其他的标识以及成员变量都会被初始化，最终客户端会被添加到`server.clients`记录的客户端全局列表中。Redis在`createClient`中做的主要工作是在EventLoop中注册一个处理器`readQueryFromClient()`，该函数在客户端连接有数据时进行读取。
+调用`createClient()`分配以及初始化一个`redisClient`对象。默认选择`0`号数据库（因为每个服务至少有一个数据库），将在`acceptHandler()`中由[`accept(2)`](http://linux.die.net/man/2/accept)生成的客户端文件描述符与`redisClient`对象关联起来。其他的标识以及成员变量都会被初始化，最终客户端会被添加到`server.clients`记录的客户端全局列表中。Redis在`createClient`中做的主要工作是在EventLoop中注册一个处理器`readQueryFromClient()`，该函数在客户端连接有数据时进行读取。
 
 ```c
 // networking.c:20
@@ -303,7 +303,7 @@ if (aeCreateFileEvent(server.el,fd,AE_READABLE, readQueryFromClient, c) == AE_ER
 
 ### 从客户端读取命令
 
-当客户端请求一个命令时，主EventLoop会调用`readQueryFromClient()`。（如果你通过GDB进行debug，该函数非常适合进行断点）。它会尽可能多的读取命令 — 最多为1024字节 — 到临时缓冲区，然后将命令追加到客户端特有的查询缓冲区中。这允许Redis处理大于1024字节的内容（命令名加上参数），由于I/O的原因会被分割成多个读取事件。然后它会调用`processInputBuffer()`，并将客户端对象通过参数进行传递。
+当客户端请求一个命令时，主EventLoop会调用`readQueryFromClient()`。（如果你通过GDB进行debug，该函数非常适合进行断点）。它会尽可能多的读取命令 — 最多为1024字节 — 到临时缓冲区，然后将命令追加到客户端特有的查询缓冲区中。这允许Redis处理大于1024字节的内容（命令名加上参数），由于I/O的原因会被分割成多个读取事件。然后它会调用`processInputBuffer()`，并将`redisClient`对象通过参数进行传递。
 
 ```c
 // networking.c:754
@@ -332,11 +332,11 @@ void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask) {
 }
 ```
 
-`processInputBuffer()`会将客户端的原始查询解析为Redis命令执行的参数。它首先要处理客户端被`B{L, R}POP`命令阻塞的可能性，一旦出现这种情况，将会提前退出。该函数随后将原始查询缓冲区解析为参数，为每个参数创建Redis `string`对象，将它们存储在客户端对象的数组中。查询是以[Redis协议](https://redis.io/docs/reference/protocol-spec/)的形式。`processInputBuffer()`实际上是一个协议解析器，调用`processCommand()`命令来完全解析协议。有点让人困惑的是，源码的注释中描述解析“多批量命令类型“是一种可选的协议，最初是用来处理类似`MSET`的命令，但实际情况是它是现在所有命令的主要Redis协议。该协议是二进制安全的（译注：[二进制安全](https://www.zhihu.com/question/28705562)），且易于解析以及debug。（注意：这个代码在即将到来的2.2版本被重构，变量更加易于理解）。现在是时候调用`processCommand()`来真正的执行客户端发送的命令了.
+`processInputBuffer()`会将客户端的原始查询解析为Redis命令执行的参数。它首先要处理客户端被`B{L, R}POP`命令阻塞的可能性，一旦出现这种情况，将会提前退出。该函数随后将原始查询缓冲区解析为参数，为每个参数创建Redis `string`对象，将它们存储在`redisClient`对象的数组中。查询是以[Redis协议](https://redis.io/docs/reference/protocol-spec/)的形式。`processInputBuffer()`实际上是一个协议解析器，调用`processCommand()`命令来完全解析协议。有点让人困惑的是，源码的注释中描述解析“多批量命令类型“是一种可选的协议，最初是用来处理类似`MSET`的命令，但实际情况是它是现在所有命令的主要Redis协议。该协议是二进制安全的（译注：[二进制安全](https://www.zhihu.com/question/28705562)），且易于解析以及debug。（注意：这个代码在即将到来的2.2版本被重构，变量更加易于理解）。现在是时候通过`redisClient`对象调用`processCommand()`来真正的执行客户端发送的命令了。
 
+`processCommand()`接收来自客户端的命令并执行它。在实际执行命令之前，会进行一系列的检查 —— 如果任何检查失败，会将错误信息追加到`redisClient`对象的回复列表中，然后返回给调用者`processInputBuffer()`。在将`QUIT`命令作为特殊情况进行处理后（为了保证安全的关闭客户端连接），`processCommand()`会在之前Redis启动时就设置的`commandTable`中查找命令名。如果是未知的命令，或者是客户端弄错了命令的参数，就会报错。虽然不是经常用，但是Redis可以配置在接收命令之前校验客户端的密码进行身份校验，如果校验不通过则会报错。如果Redis设置了最大内存，那么此时它会尝试去释放内存（释放`free list`中的空闲对象以及移除过期的key），否则的话，如果Redis服务超过了这个限制，那么将不会处理带有`REDIS_CMD_DENYOOM`标志的命令（主要是写入命令，比如`SET`、`INCR`、`RPUSH`、`ZADD`等），会再次报错。最后一项检查是客户端只能订阅未关闭的`channel`去发出`SUBSCRIBE`或者`UNSUBSCRIBE`命令，否则的话会报错。当所有的检查都通过了，那么`redisClient`对象会调用`call()`，把命令对象作为参数，命令将会被执行。
 
-
-
+> 译注：`REDIS_CMD_DENYOOM`在`commandTable`中就初始化好的
 
 
 
