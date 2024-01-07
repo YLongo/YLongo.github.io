@@ -340,11 +340,70 @@ void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask) {
 
 
 
+### 执行命令与响应
+
+`call()`从`command`对象的成员变量`proc`中获取一个指向`struct redisCommandProc`类型的函数指针，该函数接受一个参数，即`redisClient`对象。然后Redis命令处理程序被调用。
+
+```c
+// redis.c:864
+void call(redisClient *c, struct redisCommand *cmd) {
+    long long dirty;
+
+    dirty = server.dirty;
+    cmd->proc(c);
+    dirty = server.dirty-dirty;
+}
+// ...
+```
+
+类似`SET`和`ZADD`这种写命令，会把服务“弄脏”。换句话说，服务会被标记为内存中有页面被更改过了。这对自动保存程序来说非常重要，它会追踪有多少key在一定时间内发生了变化，然后写入到AOF。这个函数叫`feedAppendOnlyFile()`，如果开启了AOF，那么会把来自客户端的命令缓冲写入到AOF，这样命令就可以被重新执行。（会把设置key相对过期的命令转换为绝对过期的命令，否则的话，仅仅只是复制来自客户端的命令，参见`catAppendOnlyGenericCommand()`）。如果有任何`slave`已连接，那么`call()`会将命令发送给每个`slave`，让它们在本地执行，参见`replicationFeedSlaves()`。同样的，如果有任何客户端已连接并且发送过`MONITOR`命令，Redis会发送一个带有时间戳前缀的命令表示，参见`replicationFeedMonitors()`。
+
+> 每个Redis命令都负责为客户端进行回复。这是因为Redis命令处理程序的签名只有一个参数，也就是`redisClient`对象。同样的，每个命令处理程序负责对命令参数进行编码或反序列化，并对内存中回复给客户端的Redis对象进行解码或序列化
+
+```c
+// redis.c:871 (call() cont.'d)
+    // ...
+    if (server.appendonly && dirty)
+        feedAppendOnlyFile(cmd,c->db->id,c->argv,c->argc);
+    if ((dirty || cmd->flags & REDIS_CMD_FORCE_REPLICATION) &&
+        listLength(server.slaves))
+        replicationFeedSlaves(server.slaves,c->db->id,c->argv,c->argc);
+    if (listLength(server.monitors))
+        replicationFeedMonitors(server.monitors,c->db->id,c->argv,c->argc);
+    server.stat_numcommands++;
+}
+
+```
+
+控制权回到调用者`processCommand()`，重置`redisClient`对象以便执行后续的命令。
+
+如之前提到的，每个Redis命令处理程序负责对客户端进行响应。当`readQueryFromClient()`退出，Redis返回`aeMain()`中的EventLoop后，`aeProcessEvents()`将会恢复写缓冲区中等待的响应，并将其复制到已连接客户端对应的socket中。
+
+以上，响应就发送完了，客户端与服务端都可以回到各自发送以及处理更多Redis命令的状态中了
 
 
 
+## 总结
+
+Redis启动时初始化一个全局`server`状态变量，读取一个可选的配置文件覆盖默认值。设置一个全局命令表，将命令名跟命令实现函数连接起来。创建一个EventLoop，使用最好的可用的底层系统库进行事件通知，注册一个处理函数，用于接受新客户端socket连接。注册一个周期（基于时间的）性的事件处理器，用于处理类似`cron`任务，比如过期的key需要进行定位，这些需要在正常的客户端处理路径之外进行处理。一旦客户端已经连接，会在EventLoop中注册一个函数，当客户端有数据需要去读取时进行通知（如命令查询）。解析客户端的查询，然后调用命令处理器执行命令，并将将响应返回给客户端（向客户端写入数据也是由EventLoop进行事件通知）。接着`redisClient`对象会被重置，服务准备去处理更多的查询。
 
 
+
+## 下回 — 追踪SET与GET
+
+这篇文章之后，我将再发表一篇文章，通过一步一步查看每个命令程序的实现，并检查Redis用于存储以及索引数据的数据结构来仔细研究两个命令`SET`和`GET`的处理过程。
+
+2011.03.15 [更多 Redis 内部信息：跟踪 GET 和 SET](https://www.pauladamsmith.com/blog/2011/03/redis_get_set.html)
+
+
+
+[Paul Smith](https://www.pauladamsmith.com/) ([follow me on the Twitter](http://twitter.com/paulsmith))
+
+*感谢 `#redis` 上的 pietern 对本文草稿的反馈意见*
+
+
+
+2010.10.18
 
 
 
