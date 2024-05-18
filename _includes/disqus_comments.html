@@ -1,20 +1,36 @@
-{%- if page.comments != false and jekyll.environment == "production" -%}
 
-  <div id="disqus_thread"></div>
-  <script>
-    var disqus_config = function () {
-      this.page.url = '{{ page.url | absolute_url }}';
-      this.page.identifier = '{{ page.url | absolute_url }}';
-    };
+{% assign provider = site.provider %}
 
-    (function() {
-      var d = document, s = d.createElement('script');
+  {% if provider == "disqus" %}
+    <div id="disqus_thread"></div>
+    <script>
+      var disqus_config = function () {
+        this.page.url = '{{ page.url | absolute_url }}';
+        this.page.identifier = '{{ page.url | absolute_url }}';
+      };
 
-      s.src = 'https://{{ site.disqus.shortname }}.disqus.com/embed.js';
+      (function() {
+        var d = document, s = d.createElement('script');
 
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-  </script>
-  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-{%- endif -%}
+        s.src = 'https://{{ site.disqus.shortname }}.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  {% elsif provider == "giscus" %}
+      <script src="https://giscus.app/client.js"
+              data-repo={{ giscus.repo }}
+              data-repo-id={{ giscus.repo-id }}
+              data-category={{ giscus.category }}
+              data-category-id={{ giscus.category-id }}
+              data-mapping={{ giscus.mapping }}
+              data-reactions-enabled={{ giscus.reaction-enabled }}
+              data-emit-metadata={{ giscus.data-emit-metadata }}
+              data-theme={{ giscus.theme }}
+              data-lang={{ giscus.data-lang }}
+              crossorigin={{ giscus.crossorigin }}
+              async>
+      </script>
+  {% endif %}

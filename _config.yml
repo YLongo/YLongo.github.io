@@ -40,3 +40,4 @@ plugins:
 #   - vendor/gems/
 #   - vendor/ruby/
 permalink: /:categories/:year/:title
+provider: giscus
