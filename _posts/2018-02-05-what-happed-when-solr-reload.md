@@ -2,6 +2,7 @@
 layout: post
 title: Solr Reload 发生了什么
 date: 2018-02-05 11:36:21
+tags: [solr]
 ---
 
 > 翻译自：https://www.quora.com/What-happens-during-a-Solr-Core-Reload

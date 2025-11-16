@@ -1,3 +1,10 @@
+---
+layout: post
+title: 使用 DevKit 开发 idea 插件
+date: 2021-06-28 17:22
+tags: [intellij]
+---
+
 > Mac下使用devKit开发IDEA插件（https://plugins.jetbrains.com/docs/intellij/using-dev-kit.html）
 
 1. 下载IDEA社区版

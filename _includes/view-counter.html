@@ -1,0 +1,56 @@
+{% if page.layout == "post" %}
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="post-views-container">
+  <div class="post-views-stats">
+    <div class="post-views-item">
+      <i class="fas fa-eye" style="opacity: 0;"></i>
+      <span class="post-views-label">本站总访问量:</span>
+      <span id="busuanzi_value_site_pv" class="post-views-number">加载中...</span>
+      <span class="post-views-unit">次</span>
+    </div>
+    <div class="post-views-item">
+      <i class="fas fa-user" style="opacity: 0;"></i>
+      <span class="post-views-label">本站访客数:</span>
+      <span id="busuanzi_value_site_uv" class="post-views-number">加载中...</span>
+      <span class="post-views-unit">人次</span>
+    </div>
+    <div class="post-views-item">
+      <i class="fas fa-file-alt" style="opacity: 0;"></i>
+      <span class="post-views-label">本文阅读量:</span>
+      <span id="busuanzi_value_page_pv" class="post-views-number">加载中...</span>
+      <span class="post-views-unit">次</span>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Set up a timeout to show error message if stats don't load
+  setTimeout(function() {
+    const stats = document.querySelectorAll('.post-views-number');
+    stats.forEach(stat => {
+      if (stat.textContent === '加载中...') {
+        stat.textContent = '--';
+      }
+    });
+  }, 5000); // After 5 seconds, show '--' instead of '加载中...'
+
+  // Handle the case where Busuanzi script fails to load
+  if (typeof Busuanzi !== 'undefined') {
+    // If the script loads successfully, stats will update automatically
+  } else {
+    // If script doesn't load, keep '--' as default
+  }
+
+  // Show icons after a short delay to allow Font Awesome to load
+  setTimeout(function() {
+    const allIcons = document.querySelectorAll('.fas');
+    allIcons.forEach(function(icon) {
+      icon.style.opacity = 1;
+      icon.style.transition = 'opacity 0.3s ease';
+    });
+  }, 300);
+});
+</script>
+{% endif %}

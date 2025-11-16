@@ -2,6 +2,7 @@
 layout: post
 title: ClassNotFound vs NoClassDefFound
 date: 2018-05-08 09:05:15
+tags: [java]
 ---
 
 ClassNotFoundException 与 NoClassDefFoundError 的区别

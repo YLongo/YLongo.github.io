@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Install Solo In Tecent Cloud"
+date: 2022-01-20 00:00
+tags: [deployment, docker]
+---
+
 
 
 1. 安装 rz/sz 

@@ -1,6 +1,8 @@
 ---
+layout: post
 title: 如何开始学习机器学习（译）
 date: 2019-09-14 12:56
+tags: [machine-learning]
 ---
 
 > 翻译自：[How to Start with Machine Learning](https://www.blog.duomly.com/how-to-start-with-machine-learning/)

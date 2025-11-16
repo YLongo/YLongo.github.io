@@ -2,6 +2,7 @@
 layout: post
 title: 新词发现
 date: 2018-10-13 23:17
+tags: [nlp]
 ---
 
 新词发现

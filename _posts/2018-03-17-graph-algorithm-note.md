@@ -1,8 +1,9 @@
 ---
 layout: post
 title: 算法图解笔记
-date: 2018-03-17 17:04:08
+date: 2018-03-17 17:04
 mathjax: true
+tags: [algorithms]
 ---
 
 
@@ -25,6 +26,7 @@ mathjax: true
 2. 指出了最糟糕情况下的运行时间
 
 ### 5.4.1 填装因子
+
 $$
 填装因子 = \frac{散列表包含的元素数}{位置总数}
 $$

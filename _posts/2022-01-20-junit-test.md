@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Junit Test"
+date: 2022-01-20 00:00
+tags: [testing, java]
+---
+
 测试类的命名: `ClassNameTest`
 
 测试方法的命名: `testMethodName`

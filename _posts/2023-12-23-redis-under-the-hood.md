@@ -1,5 +1,8 @@
 ---
+layout: post
 title: Redis底层原理（译）
+date: 2023-12-23 00:00
+tags: [redis]
 ---
 
 
@@ -28,7 +31,7 @@ Redis服务是如何工作的？
 
 ### 开始全局server状态的初始化
 
-![image](../images/redis-under-the-hook/image-20231223223554-lnisj5p.png)​​
+![image](/images/redis-under-the-hook/image-20231223223554-lnisj5p.png)​​
 
 首先`initServerConfig()`​被调用，会部分初始化`server`​变量，它的类型是`struct redisServer`​，这个是全局状态变量。
 
@@ -266,7 +269,7 @@ Redis现在通过调用`aeMain`进入主EventLoop中，参数是`server.el`（�
 
 我们现在进入Redis主EventLoop轮询中了，监听端口并等待客户端连接。是时候去看一下Redis是怎么处理命令请求了。
 
-![img](../images/redis-under-the-hook/request-response.png)
+![img](/images/redis-under-the-hook/request-response.png)
 
 ### 处理新连接
 

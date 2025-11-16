@@ -1,13 +1,22 @@
+---
+layout: post
+title: "图解密码技术"
+date: 2022-01-20 00:00
+tags: [cryptography]
+---
+
 > [图解密码技术](https://book.douban.com/subject/26822106/)读书笔记
 
 # 3 对称密码
 
 ### 3.3.2 XOR
 
+```
 0 XOR 0 = 0
 0 XOR 1 = 1
 1 XOR 0 = 1
 1 XOR 1 = 0
+```
 
 如果将0理解为偶数，将1理解为奇数，就可以将XOR和一般的加法运算等同起来
 

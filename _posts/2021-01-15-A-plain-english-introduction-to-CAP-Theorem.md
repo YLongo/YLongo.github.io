@@ -1,6 +1,8 @@
 ---
-title: 大白话介绍CAP理论
 layout: post
+title: 大白话介绍CAP理论
+date: 2021-01-15 00:00
+tags: [distributed-systems]
 ---
 
 

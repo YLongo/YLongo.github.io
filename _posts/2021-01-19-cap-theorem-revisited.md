@@ -1,5 +1,8 @@
 ---
+layout: post
 title: 再探CAP
+date: 2021-01-19 00:00
+tags: [distributed-systems]
 ---
 
 > 翻译自：[CAP Theorem: Revisited](https://robertgreiner.com/cap-theorem-revisited/)

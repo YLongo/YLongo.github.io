@@ -1,3 +1,10 @@
+---
+layout: post
+title: 在64位系统上使用Lucene的MMapDirectory
+date: 2019-08-22 22:25
+tags: [lucene]
+---
+
 > 翻译自：[use-lucenes-mmapdirectory-on-64bit](http://blog.thetaphi.de/2012/07/use-lucenes-mmapdirectory-on-64bit.html)
 
 ## 莫慌 - 澄清一些常见的误解

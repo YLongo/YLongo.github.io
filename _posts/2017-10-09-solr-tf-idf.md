@@ -2,6 +2,7 @@
 layout: post
 title: solr 打分计算公式
 date: 2017-10-09 22:38
+tags: [solr]
 ---
 
 

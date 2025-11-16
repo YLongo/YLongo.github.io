@@ -18,9 +18,19 @@ layout: default
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
   </div>
+
+  {%- if page.tags.size > 0 -%}
+    <div class="post-tags">
+      {%- for tag in page.tags -%}
+        <a class="tag-badge" href="/tags#{{ tag | slugify }}">#{{ tag }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- include view-counter.html -%}
   
-    {%- include disqus_comments.html -%}
-  
+  {%- include disqus_comments.html -%}
+
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>

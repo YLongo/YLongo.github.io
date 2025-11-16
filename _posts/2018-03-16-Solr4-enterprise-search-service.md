@@ -2,6 +2,7 @@
 layout: post
 title: Solr 4 企业搜索服务
 date: 2018-03-16 10:34:34
+tags: [solr]
 ---
 
 
@@ -32,7 +33,6 @@ Solr 自带了许多的例子。我们将运行其中一个名叫 *techproducts*
 > Solr 5 增加了启动脚本来启动 Solr。在之前的版本中，你需要通过 `java -jar start.jar` 来启动。
 
 Windows 通过 `solr.cmd` 来启动，*nix 系统通过 `solr` 来启动。
-
 > 该笔记只展示 Windows 下的命令
 
 启动命令如下：

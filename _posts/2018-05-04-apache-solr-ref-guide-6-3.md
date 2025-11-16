@@ -1,6 +1,8 @@
 ---
+layout: post
 title: apache-solr-ref-guide-6.3
 date: 2018-05-04 11:50:10
+tags: [solr]
 ---
 
 [solr 用户手册](http://archive.apache.org/dist/lucene/solr/ref-guide/apache-solr-ref-guide-6.3.pdf)笔记

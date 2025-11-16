@@ -1,0 +1,174 @@
+.post-views-container {
+  margin: 0;             /* Removed all margins */
+  padding: 2px 0;        /* Minimized vertical padding */
+  border-top: 1px dotted #e0e0e0;
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 0.8em;      /* Slightly smaller font */
+  color: #888;
+}
+
+.post-views-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;            /* Reduced gap between items */
+  font-size: 0.85em;
+}
+
+.post-views-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;             /* Reduced gap between elements */
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.post-views-item:hover {
+  opacity: 1;
+}
+
+.post-views-label {
+  color: #888;
+  font-size: 0.85em;
+}
+
+.post-views-number {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9em;
+  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.post-views-unit {
+  font-size: 0.8em;
+  color: #999;
+}
+
+.post-views-item i {
+  color: #999;
+  font-size: 0.8em;
+}
+
+/* 标签样式 */
+.post-tags {
+  margin-top: 30px;
+  padding: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid #eaeaea;
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  background-color: #f0f0f0;
+  color: #555;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 0.85em;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  line-height: 1.4;
+}
+
+.tag-badge:hover {
+  background-color: #e0e0e0;
+  color: #333;
+  border-color: #999;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 移动端中文内容优化 */
+@media screen and (max-width: 600px) {
+  /* 中文内容优化 */
+  .post-content {
+    font-size: 16px; /* 稍微增大字体以提高中文可读性 */
+    line-height: 1.7; /* 增加行高以提高中文可读性 */
+  }
+
+  .post-content p,
+  .post-content li {
+    line-height: 1.7;
+  }
+
+  /* 标题在移动端优化 */
+  .post-content h1,
+  .post-content h2,
+  .post-content h3,
+  .post-content h4 {
+    line-height: 1.4;
+  }
+
+  /* 代码块优化 */
+  code {
+    font-size: 14px; /* 确保代码块中的中文字符可读 */
+    word-wrap: break-word;
+  }
+
+  pre {
+    overflow-x: auto;
+    word-wrap: break-word;
+  }
+
+  /* 引用块优化 */
+  blockquote {
+    font-size: 16px;
+    line-height: 1.6;
+    padding-left: 15px;
+  }
+
+  /* 中文列表优化 */
+  .post-content ul,
+  .post-content ol {
+    margin-left: 20px;
+  }
+
+  .post-content li {
+    margin-bottom: 8px;
+  }
+
+  /* 标签显示优化 */
+  .tag-badge {
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+
+  /* 访问量统计移动端优化 */
+  .post-views-container {
+    padding: 1px 0;      /* Minimized vertical padding */
+    margin: 0;           /* Removed all margins */
+    font-size: 0.75em;   /* Slightly smaller font on mobile */
+  }
+
+  .post-views-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;           /* Reduced gap on mobile */
+  }
+
+  .post-views-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;            /* Reduced gap on mobile */
+    opacity: 0.8;
+  }
+
+  .post-views-label {
+    font-size: 0.8em;
+  }
+
+  .post-views-number {
+    font-size: 0.85em;
+  }
+
+  .post-views-unit {
+    font-size: 0.75em;
+  }
+}

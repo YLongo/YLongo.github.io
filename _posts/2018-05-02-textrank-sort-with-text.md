@@ -4,6 +4,7 @@ title: TextRank:文本排序
 date: 2018-05-02 11:05:23
 typora-root-url: ..\
 list_number: false
+tags: [nlp, algorithms]
 ---
 
 翻译自 TextRank 论文：
@@ -49,7 +50,7 @@ $$
 图 1 绘制了随机生成的 250 个顶点与 250 个边的图的收敛曲线，它的收敛阀值是 0.0001。随着图的连接增加（例如：大量的边），在几次递归之后，收敛就可以达到。无向图与有向图的收敛曲线几乎是重合的。
 
 <div align='center'>
-    <img src='/images/TextRank-文本排序/Number-of-teratio.png' />
+    <img src='/images/textrank-text-sort/Number-of-teratio.png' />
 </div>
 
 
@@ -113,7 +114,7 @@ TextRank 的关键词抽取算法完全是不需要监督的。处理方式如�
 >
 > Compatibility of systems of linear constraints over the set of natural numbers.Criteria of compatibility of a system of linear Diophantine equations, strict inequations, and nonstrict inequations are considered. Upper bounds for components of a minimal set of solutions and algorithms of construction of minimal generating sets of solutions for all types of systems are given. These criteria and the corresponding algorithms for constructing a minimal supporting set of solutions can be used in solving all the considered types systems and systems of mixed types.
 >
-> ![图二：Sample graph build](/images/TextRank-文本排序/Sample-graph-build.png)
+> ![图二：Sample graph build](/images/textrank-text-sort/Sample-graph-build.png)
 >
 > TextRank 分配的关键词：
 >

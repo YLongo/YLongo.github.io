@@ -2,6 +2,7 @@
 layout: post
 title: Solr 缓存的理解与调优
 date: 2017-11-02 14:44
+tags: [solr]
 ---
 
 原文来自：[Understanding and tuning your Solr caches][1]

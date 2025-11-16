@@ -1,6 +1,8 @@
 ---
+layout: post
 title: algs4 notebook
 date: 2018-04-27 15:52:46
+tags: [algorithms]
 ---
 
 算法 第四版 笔记

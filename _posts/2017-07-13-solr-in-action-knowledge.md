@@ -2,6 +2,7 @@
 layout: post
 title: Solr in Action 知识点
 date: 2017-07-13 20:22
+tags: [solr]
 ---
 
 《Solr in Action》读书笔记

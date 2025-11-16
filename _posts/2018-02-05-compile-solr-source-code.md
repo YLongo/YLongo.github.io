@@ -2,6 +2,7 @@
 layout: post
 title: 编译 solr 源码
 date: 2018-02-05 12:36:21
+tags: [solr]
 ---
 
 

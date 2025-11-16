@@ -4,6 +4,7 @@ title: Solr 影响性能的因素
 date: 2018-05-09 10:15:57
 toc: true
 list_number: true
+tags: [solr]
 ---
 
 Solr 影响性能的因素。

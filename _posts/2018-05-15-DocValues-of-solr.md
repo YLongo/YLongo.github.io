@@ -2,6 +2,7 @@
 layout: post
 title: solr 之 DocValues
 date: 2018-05-15 9:29
+tags: [solr]
 ---
 
 >   来源：solr-guide-6.3：DocValues

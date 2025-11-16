@@ -2,6 +2,7 @@
 layout: post
 title: 近实时搜索
 date: 2017-11-03 19:10
+tags: [solr]
 ---
 
 > 来源：solr-guide-6.3：Near Real Time Searching

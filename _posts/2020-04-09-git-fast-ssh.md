@@ -1,3 +1,10 @@
+---
+layout: post
+title: git 通过 SSH 速度太慢
+date: 2020-04-09 22:13
+tags: [git]
+---
+
 在有代理的情况下，加速`git clone`的速度。
 
 - `ssh`

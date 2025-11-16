@@ -1,10 +1,17 @@
+---
+layout: post
+title: "Linux命令行"
+date: 2022-01-20 00:00
+tags: [linux, bash]
+---
+
 1. 通过关键字搜索手册页
 
    `man -k 关键字`
 
    例：`man -k hostname`
 
-   ![image.png](assets/image-20210524164946-s5no19r.png)
+   ![image.png](/images/linux-command-line/image-20210524164946-s5no19r.png)
 
    - 后面的数字表示手册来自哪块内容
 
@@ -16,7 +23,7 @@
 
    在没安装彩色终端仿真器时，该命令可以区分文件和目录
 
-   ![image.png](assets/image-20210524172000-l910zj1.png)
+   ![image.png](/images/linux-command-line/image-20210524172000-l910zj1.png)
 
    - 目录名后面会添加正斜线`/`
    - 可执行文件后面会添加`*`
@@ -33,13 +40,13 @@
 
    给所有的行加上行号
 
-   ![image.png](assets/image-20210525111048-52swcou.png)
+   ![image.png](/images/linux-command-line/image-20210525111048-52swcou.png)
    
 6. `cat -b file_name`
 
    给有文本的行加上行号
 
-   ![image.png](assets/image-20210525111058-ir4o8vc.png)
+   ![image.png](/images/linux-command-line/image-20210525111058-ir4o8vc.png)
    
 7. `head file_name`
 
@@ -49,7 +56,7 @@
    
 8. `top`命令显示实时的进程信息
 
-   ![image.png](assets/image-20210525112845-wb2c64a.png)
+   ![image.png](/images/linux-command-line/image-20210525112845-wb2c64a.png)
 
    第一行显示了当前时间、系统的运行时间、登录的用户数以及系统的平均负载
 
@@ -68,19 +75,19 @@
 
     例：`grep -v t file1` 搜索`file1`中不包含`t`的行
 
-    ![image.png](assets/image-20210525142520-wf737z9.png)
+    ![image.png](/images/linux-command-line/image-20210525142520-wf737z9.png)
     
 12. `grep -n`显示匹配到的行的行号
 
     例：`grep -n t file1`
 
-    ![image.png](assets/image-20210525142635-a7zp7k1.png)
+    ![image.png](/images/linux-command-line/image-20210525142635-a7zp7k1.png)
     
 13. `grep -e`搜索时匹配多个模式
 
     例：`grep -e t -e f file1`搜索含有字符 t 或字符 f 的所有行
 
-    ![image.png](assets/image-20210525142822-sduemsk.png)
+    ![image.png](/images/linux-command-line/image-20210525142822-sduemsk.png)
     
 14. `tar function [options] object1 object2 ...` 对数据进行归档
 
@@ -136,7 +143,7 @@
 
 16. 显示个别环境变量的值，可以使用`printenv`命令或者`echo env_name`命令
 
-    ![image-20210525160333322](assets/image-20210525160333322.png)
+    ![image-20210525160333322](/images/linux-command-line/image-20210525160333322.png)
 
     > `env`命令不能查看单个环境变量的值
 
@@ -144,11 +151,11 @@
 
 17. 设置变量时，变量名、等号和值之间没有空格
 
-    ![image-20210525162158629](assets/image-20210525162158629.png)
+    ![image-20210525162158629](/images/linux-command-line/image-20210525162158629.png)
 
 18. 删除环境变量
 
-    ![image-20210525162610335](assets/image-20210525162610335.png)
+    ![image-20210525162610335](/images/linux-command-line/image-20210525162610335.png)
 
     > 不要使用`$`
 
@@ -206,7 +213,7 @@
 
 22. `/etc/passwd`文件
 
-    ![image-20210528152116954](assets/image-20210528152116954.png)
+    ![image-20210528152116954](/images/linux-command-line/image-20210528152116954.png)
 
     字段包含了如下信息：
 
@@ -354,11 +361,11 @@
 
         例：
 
-        ![image-20210609134616549](assets/image-20210609134616549.png)
+        ![image-20210609134616549](/images/linux-command-line/image-20210609134616549.png)
 
         如果要显示`$`，需要添加反斜杆`\`
 
-        ![image-20210609134753303](assets/image-20210609134753303.png)
+        ![image-20210609134753303](/images/linux-command-line/image-20210609134753303.png)
 
     - `set`
 
@@ -372,7 +379,7 @@
 
     - 引用一个变量值时需要使用美元符
 
-      ![image-20210609135818773](assets/image-20210609135818773.png)
+      ![image-20210609135818773](/images/linux-command-line/image-20210609135818773.png)
 
       > 没有美元符，shell会将变量名解释成普通的文本字符串
 
@@ -383,7 +390,7 @@
     - 反引号字符`` ` ``
     - `$()`格式
 
-    ![image-20210609143458677](assets/image-20210609143458677.png)
+    ![image-20210609143458677](/images/linux-command-line/image-20210609143458677.png)
 
 33. 退出脚本
 
@@ -408,7 +415,7 @@
 
     如果`if`后面的命令执行成功（退出状态码为0），则会执行`then`部分的命令，否则不会执行
 
-    ![image-20210609151608228](assets/image-20210609151608228.png)
+    ![image-20210609151608228](/images/linux-command-line/image-20210609151608228.png)
 
 35. `if-then-else`语句
 
@@ -447,7 +454,7 @@
 
     > 如果不写 `test` 命令的 `condition` 部分，它会以非零的退出状态码退出
 
-    ![image-20210609160420962](assets/image-20210609160420962.png)
+    ![image-20210609160420962](/images/linux-command-line/image-20210609160420962.png)
 
     bash shell提供了另一种条件测试方法，无需在 `if-then` 语句中声明 `test` 命令：
 
@@ -464,19 +471,19 @@
 
     - 数值比较
 
-      ![image-20210609165030879](assets/image-20210609165030879.png)
+      ![image-20210609165030879](/images/linux-command-line/image-20210609165030879.png)
 
       > bash shell只能处理整数，所以不能在test命令中使用浮点值
 
     - 字符串比较
 
-      ![image-20210609170209048](assets/image-20210609170209048.png)
+      ![image-20210609170209048](/images/linux-command-line/image-20210609170209048.png)
 
       > 在比较时，`>`、`<`需要加转义符`\`
     
     - 文件比较
     
-      ![image-20210610103541802](assets/image-20210610103541802.png)
+      ![image-20210610103541802](/images/linux-command-line/image-20210610103541802.png)
     
 38. 创建符号链接
 
@@ -529,7 +536,7 @@
 
     Linux系统将每个对象当作文件处理。这包括输入和输出进程。Linux用文件描述符来标识每个文件对象。文件描述符是一个非负整数，可以唯一标识会话中打开的文件。每个进程一次最多可以有九个文件描述符。bash shell保留了前三个文件描述符
 
-    ![image-20210610165015886](assets/image-20210610165015886.png)
+    ![image-20210610165015886](/images/linux-command-line/image-20210610165015886.png)
 
     - `0`
 

@@ -2,6 +2,7 @@
 layout: post
 title: 数学之美第二版
 date: 2018-10-13 23:26
+tags: [mathematics]
 ---
 
 数学之美第二版读书笔记
@@ -13,7 +14,7 @@ date: 2018-10-13 23:26
 假定 `S` 表示一个有意义的句子，由一连串特定顺序排序的词 $w_1, w_2, ... , w_n$ 组成，`n` 表示句子的长度。`S` 这个序列出现的概率等于每一个词出现的条件概率相乘。 
 
 $$
-P(S) = P(w_1, w_2, ... , w_n) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_1, w_2) \cdot \cdot \cdot P(w_n|w_1, w_2, \cdot \cdot \cdot, w_{n-1})
+P(S) = P(w_1, w_2, \ldots, w_n) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_1, w_2) \cdot \ldots \cdot P(w_n|w_1, w_2, \ldots, w_{n-1})
 $$
 
 其中，$P(w_1)$ 表示第一个词 $w_1$ 出现的概率。$P(w_2 \vert w_1)$ 表示在已知第一个词的前提下，第二个词出现的概率。
@@ -21,7 +22,7 @@ $$
 `马尔科夫假设：` 假设任意一个词 $w_i$ 出现的概率只同它前面的词 $w_{i-1}$ 有关。所以 `S` 出现的概率就变为：
 
 $$
-P(S) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_2) \cdot \cdot \cdot P(w_i|w_{i-1} \cdot \cdot \cdot P(w_n|w_{n-1}))
+P(S) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_2) \cdot \ldots \cdot P(w_i|w_{i-1}) \cdot \ldots \cdot P(w_n|w_{n-1})
 $$
 
 这个公式对应的统计语言模型是`二元模型 (Bigram Model)`。
@@ -29,8 +30,9 @@ $$
 ### 3.2.1 高阶语言模型
 
 `N-1 阶马尔科夫假设：` 假设文本中的每个词 $w_i$ 与前面 `N-1` 个词有关。当前词 $w_i$ 的概率只取决于前面 `N-1` 个词。因此：
+
 $$
-P(w_i|w_1, w_2, \cdot \cdot \cdot w_{i-1}) = P(w_i|w_{i-N+1}, w_{i-N+2}, \cdot \cdot \cdot, w_{i-1})
+P(w_i|w_1, w_2, \ldots, w_{i-1}) = P(w_i|w_{i-N+1}, w_{i-N+2}, \ldots, w_{i-1})
 $$
 
 这个公式对应的语言模型称为 `N 元模型 (N-Gram Model)`。
@@ -133,10 +135,10 @@ $$
 
 对于任意一个随机变量 $X$，它的熵定义如下：
 
+$$
+H(X) = -\sum_{x \in X} P(x) \log P(x)
+$$
 
-$$
-H(X) = -\sum_{x \in X} P(x)logP(x)
-$$
 > log 表示以 2 为底
 
 一条信息的信息量和它的不确定性有着直接的关系。变量的不确定性越大，熵也就越大，把它搞清楚所需要的信息量也就越大。
@@ -148,7 +150,7 @@ $$
 对于两个随机变量 $X$ 和 $Y$，在 $Y$ 的条件下 $X$ 的条件熵定义为：
 
 $$
-H(X|Y) = -\sum_{x \in X, y \in Y} P(x,y)logP(x|y)
+H(X|Y) = -\sum_{x \in X, y \in Y} P(x,y) \log P(x|y)
 $$
 
 > TODO 联合概率分布，条件概率分布

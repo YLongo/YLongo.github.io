@@ -1,3 +1,10 @@
+---
+layout: post
+title: sbt 配置
+date: 2022-05-27 20:02
+tags: [sbt]
+---
+
 sbt仓库镜像设置: `${HOME}/.sbt/repositories`
 
 ```sbt

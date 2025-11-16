@@ -2,6 +2,7 @@
 layout: post
 title: 搜索之空间向量模型
 date: 2017-11-15 18:51
+tags: [search-engine]
 ---
 
 

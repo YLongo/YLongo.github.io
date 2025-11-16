@@ -1,5 +1,8 @@
 ---
+layout: post
 title: 更多Redis内部信息：追踪GET和SET（译）
+date: 2024-01-15 00:00
+tags: [redis]
 ---
 
 

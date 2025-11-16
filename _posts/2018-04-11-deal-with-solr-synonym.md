@@ -2,6 +2,7 @@
 layout: post
 title: solr 同义词处理
 date: 2018-04-11 21:42
+tags: [solr]
 ---
 
 solr 笔记
@@ -48,7 +49,7 @@ Solr 提供了 SynonymFilterFactory 用来处理包含了用逗号 (,) 分割的
 
 下面的图表很好的总结两者之间的不同之处。我们的问题是针对 solr，但是关于两者之间的选择可以应用到任何搜索系统。
 
-![index_vs_query_expansion2](/images/solr-笔记/index_vs_query_expansion2.png)
+![index_vs_query_expansion2](/images/solr-notes/index_vs_query_expansion2.png)
 
 根据你的直觉判断应该将 SynonymFilterFactory 放到 query analyzer 中，因为在理论上，这有几个好处：
 
@@ -91,11 +92,11 @@ cancer of the breast
 
 事实证明，SynonymFilterFactory 并没有按照你所想的那样扩展你的多词同义词。如果我们用有限自动机来表示，你可能认为 solr 会建立像下面一样的关系图（忽略复数）：
 
-![你想象中的关系图](/images/solr-笔记/graph11.png)
+![你想象中的关系图](/images/solr-notes/graph11.png)
 
 但是实际确实这样的：
 
-![实际的关系图](/images/solr-笔记/graph22.png)
+![实际的关系图](/images/solr-notes/graph22.png)
 
 而只有包含连续四个词的文档才可以被匹配到。
 
