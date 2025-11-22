@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Solr in Action 知识点
+title: Solr in Action知识点
 date: 2017-07-13 20:22
 tags: [solr]
 ---

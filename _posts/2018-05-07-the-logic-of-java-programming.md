@@ -1,6 +1,6 @@
 ---
 layout: post
-title: java 编程的逻辑
+title: Java编程的逻辑
 date: 2018-05-07 23:11:38
 tags: [java]
 ---

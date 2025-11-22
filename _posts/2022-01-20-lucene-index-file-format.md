@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Lucene 索引文件格式
+title: Lucene索引文件格式
 date: 2022-01-20 00:00
 tags: [lucene]
 ---

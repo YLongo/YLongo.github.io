@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Solr Reload 发生了什么
+title: Solr Reload发生了什么
 date: 2018-02-05 11:36:21
 tags: [solr]
 ---

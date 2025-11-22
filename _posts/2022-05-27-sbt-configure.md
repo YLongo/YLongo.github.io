@@ -1,6 +1,6 @@
 ---
 layout: post
-title: sbt 配置
+title: SBT配置
 date: 2022-05-27 20:02
 tags: [sbt]
 ---

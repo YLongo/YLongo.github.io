@@ -1,6 +1,6 @@
 ---
 layout: post
-title: git 通过 SSH 速度太慢
+title: Git通过SSH速度太慢
 date: 2020-04-09 22:13
 tags: [git]
 ---

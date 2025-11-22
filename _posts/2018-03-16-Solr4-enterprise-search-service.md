@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Solr 4 企业搜索服务
+title: Solr 4企业搜索服务
 date: 2018-03-16 10:34:34
 tags: [solr]
 ---

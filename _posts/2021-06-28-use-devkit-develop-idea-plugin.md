@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 使用 DevKit 开发 idea 插件
+title: 使用DevKit开发IDEA插件
 date: 2021-06-28 17:22
 tags: [intellij]
 ---

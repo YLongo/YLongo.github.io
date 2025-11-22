@@ -1,6 +1,6 @@
 ---
 layout: post
-title: solr 打分计算公式
+title: Solr打分计算公式
 date: 2017-10-09 22:38
 tags: [solr]
 ---
@@ -49,7 +49,6 @@ $norm(t,d) = d.getBoost() \cdot lengthNorm(f) \cdot f.getBoost()$
 > $lengthNorm = 1 \; / \; Math.sqrt(numTerms) $
 
 6. `t.getBoost：` 即每个词的权重，没给则默认为 1
-
 
 
 

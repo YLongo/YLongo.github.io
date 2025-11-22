@@ -1,6 +1,6 @@
 ---
 layout: post
-title: solr 同义词处理
+title: Solr同义词处理
 date: 2018-04-11 21:42
 tags: [solr]
 ---
