@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "MCP协议简介：连接AI与本地数据的桥梁"
-date: 2025-11-24 23:58:00
+title: "MCP协议简介"
+date: 2025-11-24 23:58
 tags: [AI, MCP]
 ---
 
