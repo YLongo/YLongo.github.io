@@ -5,6 +5,8 @@ date: 2026-01-22 23:40
 tags: [一日三餐, 荤]
 ---
 
+> https://www.bilibili.com/video/BV1FUzLBVE5z/
+
 # **食材清单**
 
 | 类别     | 食材名称       | 用量             | 备注                                   |
